@@ -14,8 +14,8 @@ class Diagnosa extends Model
     protected $table = 'diagnosa';
     protected $primaryKey = 'rekam_medis';
     public $incrementing = false;
-    protected $keyType = 'string'; 
-    protected $fillable = ['rekam_medis','dokter_id', 'pasien_id', 'kamar_id', 'harga'];
+    protected $keyType = 'string';
+    protected $fillable = ['rekam_medis', 'dokter_id', 'pasien_id', 'kamar_id', 'harga', 'penyakit'];
 
     public function dokter(): BelongsTo
     {
@@ -32,10 +32,10 @@ class Diagnosa extends Model
         return $this->belongsTo(Kamar::class, 'kamar_id', 'no_kamar');
     }
 
-    public function obats(): BelongsToMany
-    {
-        return $this->belongsToMany(Obat::class, 'diagnosa_obat', 'rekam_medis', 'kode_obat')
-            ->using(DiagnosaObat::class)
-          ;
-    }
+    // public function obats(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Obat::class, 'diagnosa_obat', 'rekam_medis', 'kode_obat')
+    //         ->using(DiagnosaObat::class)
+    //       ;
+    // }
 }

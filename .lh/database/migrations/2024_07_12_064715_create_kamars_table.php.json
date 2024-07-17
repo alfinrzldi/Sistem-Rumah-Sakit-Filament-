@@ -1,0 +1,26 @@
+{
+    "sourceFile": "database/migrations/2024_07_12_064715_create_kamars_table.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1721207009558,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1721207021379,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,9 +16,9 @@\n         Schema::create('kamar', function (Blueprint $table) {\n             $table->string('no_kamar')->primary();// Sesuaikan dengan tipe data NIK pada tabel pasien Sesuaikan dengan tipe data id pada tabel petugas\n             $table->string('harga');\n             $table->boolean('status')->default(false);\n-            $table->string('pasien_id');\n+            $table->string('pasien_id')->nullable();\n             $table->timestamps();\n             $table->foreign('pasien_id')->references('NIK')->on('pasien')->nullable(false);\n         });\n     }\n"
+                },
+                {
+                    "date": 1721207103404,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -16,9 +16,9 @@\n         Schema::create('kamar', function (Blueprint $table) {\n             $table->string('no_kamar')->primary();// Sesuaikan dengan tipe data NIK pada tabel pasien Sesuaikan dengan tipe data id pada tabel petugas\n             $table->string('harga');\n             $table->boolean('status')->default(false);\n-            $table->string('pasien_id')->nullable();\n+            $table->string('pasien_id')->nullable()->default('Kosong');\n             $table->timestamps();\n             $table->foreign('pasien_id')->references('NIK')->on('pasien')->nullable(false);\n         });\n     }\n"
+                }
+            ],
+            "date": 1721207009558,
+            "name": "Commit-0",
+            "content": "<?php\n\nuse Illuminate\\Database\\Migrations\\Migration;\nuse Illuminate\\Database\\Schema\\Blueprint;\nuse Illuminate\\Support\\Facades\\Schema;\n\nuse function Livewire\\on;\n\nreturn new class extends Migration\n{\n    /**\n     * Run the migrations.\n     */\n    public function up(): void\n    {\n        Schema::create('kamar', function (Blueprint $table) {\n            $table->string('no_kamar')->primary();// Sesuaikan dengan tipe data NIK pada tabel pasien Sesuaikan dengan tipe data id pada tabel petugas\n            $table->string('harga');\n            $table->boolean('status')->default(false);\n            // $table->string('petugas_id'); \n            $table->string('pasien_id'); \n            $table->timestamps();\n            $table->foreign('pasien_id')->references('NIK')->on('pasien')->nullable(false);\n        });\n    }\n\n    /**\n     * Reverse the migrations.\n     */\n    public function down(): void\n    {\n        Schema::table('kamar', function (Blueprint $table) {\n            $table->dropColumn([]);\n        });\n    }\n};"
+        }
+    ]
+}

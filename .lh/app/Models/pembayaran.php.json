@@ -1,0 +1,54 @@
+{
+    "sourceFile": "app/Models/pembayaran.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 9,
+            "patches": [
+                {
+                    "date": 1721194581573,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1721194624850,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,10 +20,8 @@\n         'diagnosa_id',\n         'pasien_id',\n         'kamar_id',\n         'tanggal',\n-        'obat_id',\n-        'jumlah_obat',\n         'harga', // Add harga field\n         'jumlah', // Add jumlah field\n     ];\n \n"
+                },
+                {
+                    "date": 1721207970751,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,9 +20,8 @@\n         'diagnosa_id',\n         'pasien_id',\n         'kamar_id',\n         'tanggal',\n-        'harga', // Add harga field\n         'jumlah', // Add jumlah field\n     ];\n \n     public function diagnosa(): BelongsTo\n"
+                },
+                {
+                    "date": 1721207988665,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,9 +20,8 @@\n         'diagnosa_id',\n         'pasien_id',\n         'kamar_id',\n         'tanggal',\n-        'jumlah', // Add jumlah field\n     ];\n \n     public function diagnosa(): BelongsTo\n {\n"
+                },
+                {
+                    "date": 1721208010115,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,10 @@\n     protected $fillable = [\n         'diagnosa_id',\n         'pasien_id',\n         'kamar_id',\n-        'tanggal',\n+        'tanggal_masuk',\n+        'tanggal_keluar',\n     ];\n \n     public function diagnosa(): BelongsTo\n {\n"
+                },
+                {
+                    "date": 1721208519855,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -28,24 +28,8 @@\n {\n     return $this->belongsTo(Diagnosa::class, 'diagnosa_id', 'rekam_medis');\n }\n \n-\n-    public function pasien(): BelongsTo\n-    {\n-        return $this->belongsTo(Pasien::class, 'pasien_id', 'NIK');\n-    }\n-\n-    public function kamar(): BelongsTo\n-    {\n-        return $this->belongsTo(Kamar::class, 'kamar_id', 'no_kamar');\n-    }\n-\n-    // public function obat(): HasMany\n-    // {\n-    //     return $this->hasMany(Obat::class, 'obat_id', 'kode_obat');\n-    // }\n-\n     public function getTotalAttribute()\n     {\n         return $this->harga * $this->jumlah;\n     }\n"
+                },
+                {
+                    "date": 1721208541206,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,10 +17,9 @@\n     public $incrementing = true; // Ensure the primary key is auto-incrementing\n \n     protected $fillable = [\n         'diagnosa_id',\n-        'pasien_id',\n-        'kamar_id',\n+       \n         'tanggal_masuk',\n         'tanggal_keluar',\n     ];\n \n"
+                },
+                {
+                    "date": 1721209331936,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,9 +3,8 @@\n \n use Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\n use Illuminate\\Database\\Eloquent\\Model;\n use Illuminate\\Database\\Eloquent\\Relations\\BelongsTo;\n-use Illuminate\\Database\\Eloquent\\Relations\\HasMany;\n \n class Pembayaran extends Model\n {\n     use HasFactory;\n@@ -22,13 +21,29 @@\n         'tanggal_keluar',\n     ];\n \n     public function diagnosa(): BelongsTo\n-{\n-    return $this->belongsTo(Diagnosa::class, 'diagnosa_id', 'rekam_medis');\n-}\n+    {\n+        return $this->belongsTo(Diagnosa::class, 'diagnosa_id', 'rekam_medis');\n+    }\n \n-    public function getTotalAttribute()\n+    public function calculateTotal()\n     {\n-        return $this->harga * $this->jumlah;\n+        $diagnosa = $this->diagnosa;\n+        $totalHargaDiagnosa = $diagnosa->harga;\n+\n+        if ($diagnosa->kamar_id) {\n+            $kamar = $diagnosa->kamar;\n+            $hargaKamarPerHari = $kamar->harga;\n+\n+            $tanggalMasuk = new \\DateTime($this->tanggal_masuk);\n+            $tanggalKeluar = new \\DateTime($this->tanggal_keluar);\n+            $jumlahHari = $tanggalKeluar->diff($tanggalMasuk)->days + 1; // Include both start and end date\n+\n+            $totalHargaKamar = $hargaKamarPerHari * $jumlahHari;\n+\n+            return $totalHargaKamar + $totalHargaDiagnosa;\n+        }\n+\n+        return $totalHargaDiagnosa;\n     }\n }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1721209346052,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,11 +10,11 @@\n     use HasFactory;\n \n     protected $table = 'pembayaran';\n \n-    protected $primaryKey = 'id_pembayaran'; // Set the primary key\n+    protected $primaryKey = 'id_pembayaran'; \n \n-    public $incrementing = true; // Ensure the primary key is auto-incrementing\n+    public $incrementing = true;\n \n     protected $fillable = [\n         'diagnosa_id',\n         'tanggal_masuk',\n@@ -36,9 +36,9 @@\n             $hargaKamarPerHari = $kamar->harga;\n \n             $tanggalMasuk = new \\DateTime($this->tanggal_masuk);\n             $tanggalKeluar = new \\DateTime($this->tanggal_keluar);\n-            $jumlahHari = $tanggalKeluar->diff($tanggalMasuk)->days + 1; // Include both start and end date\n+            $jumlahHari = $tanggalKeluar->diff($tanggalMasuk)->days + 1;\n \n             $totalHargaKamar = $hargaKamarPerHari * $jumlahHari;\n \n             return $totalHargaKamar + $totalHargaDiagnosa;\n"
+                },
+                {
+                    "date": 1721209685365,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,11 +10,11 @@\n     use HasFactory;\n \n     protected $table = 'pembayaran';\n \n-    protected $primaryKey = 'id_pembayaran';\n+    protected $primaryKey = 'id_pembayaran'; // Set the primary key\n \n-    public $incrementing = true;\n+    public $incrementing = true; // Ensure the primary key is auto-incrementing\n \n     protected $fillable = [\n         'diagnosa_id',\n         'tanggal_masuk',\n@@ -25,25 +25,32 @@\n     {\n         return $this->belongsTo(Diagnosa::class, 'diagnosa_id', 'rekam_medis');\n     }\n \n-    public function calculateTotal()\n+    public function calculateTotalHargaKamar()\n     {\n         $diagnosa = $this->diagnosa;\n-        $totalHargaDiagnosa = $diagnosa->harga;\n \n         if ($diagnosa->kamar_id) {\n             $kamar = $diagnosa->kamar;\n             $hargaKamarPerHari = $kamar->harga;\n \n             $tanggalMasuk = new \\DateTime($this->tanggal_masuk);\n             $tanggalKeluar = new \\DateTime($this->tanggal_keluar);\n-            $jumlahHari = $tanggalKeluar->diff($tanggalMasuk)->days + 1;\n+            $jumlahHari = $tanggalKeluar->diff($tanggalMasuk)->days + 1; // Include both start and end date\n \n-            $totalHargaKamar = $hargaKamarPerHari * $jumlahHari;\n-\n-            return $totalHargaKamar + $totalHargaDiagnosa;\n+            return $hargaKamarPerHari * $jumlahHari;\n         }\n \n-        return $totalHargaDiagnosa;\n+        return 0;\n     }\n+\n+    public function calculateTotalDiagnosa()\n+    {\n+        return $this->diagnosa->harga;\n+    }\n+\n+    public function calculateTotal()\n+    {\n+        return $this->calculateTotalHargaKamar() + $this->calculateTotalDiagnosa();\n+    }\n }\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1721194581573,
+            "name": "Commit-0",
+            "content": "<?php\nnamespace App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\nuse Illuminate\\Database\\Eloquent\\Relations\\BelongsTo;\nuse Illuminate\\Database\\Eloquent\\Relations\\HasMany;\n\nclass Pembayaran extends Model\n{\n    use HasFactory;\n\n    protected $table = 'pembayaran';\n\n    protected $primaryKey = 'id_pembayaran'; // Set the primary key\n\n    public $incrementing = true; // Ensure the primary key is auto-incrementing\n\n    protected $fillable = [\n        'diagnosa_id',\n        'pasien_id',\n        'kamar_id',\n        'tanggal',\n        'obat_id',\n        'jumlah_obat',\n        'harga', // Add harga field\n        'jumlah', // Add jumlah field\n    ];\n\n    public function diagnosa(): BelongsTo\n{\n    return $this->belongsTo(Diagnosa::class, 'diagnosa_id', 'rekam_medis');\n}\n\n\n    public function pasien(): BelongsTo\n    {\n        return $this->belongsTo(Pasien::class, 'pasien_id', 'NIK');\n    }\n\n    public function kamar(): BelongsTo\n    {\n        return $this->belongsTo(Kamar::class, 'kamar_id', 'no_kamar');\n    }\n\n    // public function obat(): HasMany\n    // {\n    //     return $this->hasMany(Obat::class, 'obat_id', 'kode_obat');\n    // }\n\n    public function getTotalAttribute()\n    {\n        return $this->harga * $this->jumlah;\n    }\n}"
+        }
+    ]
+}

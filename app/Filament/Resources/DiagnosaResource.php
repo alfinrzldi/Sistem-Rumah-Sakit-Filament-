@@ -46,14 +46,11 @@ class DiagnosaResource extends Resource
                     ]),
                 Forms\Components\Section::make('Masukkan Diagnosa Pasien')
                     ->schema([
-                        Forms\Components\Select::make('obats')
-                            ->multiple()
-                            ->preload()
-                            ->relationship('obats', 'nama')
+                        Forms\Components\TextInput::make('penyakit')
                             ->required(),
                         Forms\Components\Select::make('kamar_id')
                             ->relationship('kamar', 'no_kamar')
-                            ->required(),
+                        ,
                         Forms\Components\TextInput::make('harga')
                             ->required()
                             ->maxLength(255),
@@ -72,12 +69,15 @@ class DiagnosaResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('pasien.nama')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('penyakit')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('kamar.no_kamar')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('obats.nama')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('harga')
-                    ->searchable(),
+                    ->searchable()
+                    ->getStateUsing(function ($record) {
+                        return 'Rp. ' . number_format($record->harga, 0, ',', '.');
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

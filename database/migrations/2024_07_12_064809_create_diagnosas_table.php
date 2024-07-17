@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('diagnosa', function (Blueprint $table) {
             $table->string('rekam_medis')->primary(); // Menggunakan rekam_medis sebagai primary key
             $table->string('harga');
-            $table->timestamps();
             $table->string('dokter_id');
             $table->string('pasien_id');
-            $table->string('kamar_id');
+            $table->string('kamar_id')->nullable();
+            $table->string('penyakit');
+            $table->timestamps();
 
             // Add foreign key constraints
             $table->foreign('pasien_id')->references('NIK')->on('pasien');

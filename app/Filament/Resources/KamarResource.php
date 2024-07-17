@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\KamarResource\Pages;
 use App\Filament\Resources\KamarResource\RelationManagers;
 use App\Models\Kamar;
+use App\Models\pasien;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\FormsComponent;
@@ -35,14 +36,16 @@ class KamarResource extends Resource
                             ->maxLength(255),
                         Forms\Components\Select::make('pasien_id')
                             ->label('Nomor Pasien')
-                            ->relationship('pasien', 'NIK')
-                            ->required(),
+                            ->options(function () {
+                                return Pasien::where('status', 'Rawat Inap')
+                                    ->pluck('NIK', 'NIK');  // Use 'NIK' as key and 'nama' as value
+                            })
+                        ,
                         Forms\Components\TextInput::make('harga')
                             ->required()
                             ->maxLength(255),
                         Forms\Components\Toggle::make('status')
-                            ->label('Status Kamar')
-                            ->required(),
+                            ->label('Status Kamar'),
                     ])
             ]);
     }

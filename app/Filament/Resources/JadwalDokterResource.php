@@ -32,12 +32,26 @@ class JadwalDokterResource extends Resource
                         Forms\Components\Select::make('dokter_id')
                             ->relationship('dokter', 'nama')
                             ->required(),
-                        Forms\Components\TextInput::make('hari')
+                        Forms\Components\Select::make('hari')
+                            ->label('Hari')
                             ->required()
-                            ->maxLength(255),
-                        Forms\Components\TextInput::make('jam')
+                            ->options([
+                                'Senin' => 'Senin',
+                                'Selasa' => 'Selasa',
+                                'Rabu' => 'Rabu',
+                                'Kamis' => 'Kamis',
+                                'Jum`at' => "Jum'at",
+                                'Sabtu' => 'Sabtu',
+                                'Minggu' => 'Minggu',
+                            ]),
+                        Forms\Components\Select::make('jam')
                             ->required()
-                            ->maxLength(255),
+                            ->options([
+                                '07:00-08:00' => '07:00-08:00',
+                                '08:00-09:00' => '08:00-09:00',
+                                '09:00-10:00' => '09:00-10:00',
+                                '10:00-11:00' => '10:00-11:00',
+                            ]),
                     ])
             ]);
     }

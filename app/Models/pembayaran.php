@@ -4,7 +4,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pembayaran extends Model
 {
@@ -18,38 +17,40 @@ class Pembayaran extends Model
 
     protected $fillable = [
         'diagnosa_id',
-        'pasien_id',
-        'kamar_id',
-        'tanggal',
-        'obat_id',
-        'jumlah_obat',
-        'harga', // Add harga field
-        'jumlah', // Add jumlah field
+        'tanggal_masuk',
+        'tanggal_keluar',
     ];
 
     public function diagnosa(): BelongsTo
-{
-    return $this->belongsTo(Diagnosa::class, 'diagnosa_id', 'rekam_medis');
-}
-
-
-    public function pasien(): BelongsTo
     {
-        return $this->belongsTo(Pasien::class, 'pasien_id', 'NIK');
+        return $this->belongsTo(Diagnosa::class, 'diagnosa_id', 'rekam_medis');
     }
 
-    public function kamar(): BelongsTo
+    public function calculateTotalHargaKamar()
     {
-        return $this->belongsTo(Kamar::class, 'kamar_id', 'no_kamar');
+        $diagnosa = $this->diagnosa;
+
+        if ($diagnosa->kamar_id) {
+            $kamar = $diagnosa->kamar;
+            $hargaKamarPerHari = $kamar->harga;
+
+            $tanggalMasuk = new \DateTime($this->tanggal_masuk);
+            $tanggalKeluar = new \DateTime($this->tanggal_keluar);
+            $jumlahHari = $tanggalKeluar->diff($tanggalMasuk)->days + 1; // Include both start and end date
+
+            return $hargaKamarPerHari * $jumlahHari;
+        }
+
+        return 0;
     }
 
-    public function obat(): HasMany
+    public function calculateTotalDiagnosa()
     {
-        return $this->hasMany(Obat::class, 'obat_id', 'kode_obat');
+        return $this->diagnosa->harga;
     }
 
-    public function getTotalAttribute()
+    public function calculateTotal()
     {
-        return $this->harga * $this->jumlah;
+        return $this->calculateTotalHargaKamar() + $this->calculateTotalDiagnosa();
     }
 }

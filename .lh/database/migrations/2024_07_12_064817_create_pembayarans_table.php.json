@@ -1,0 +1,42 @@
+{
+    "sourceFile": "database/migrations/2024_07_12_064817_create_pembayarans_table.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1721192264316,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1721205998275,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,10 @@\n             $table->string('pasien_id');\n             $table->string('kamar_id');\n             $table->integer('harga');\n             $table->integer('jumlah')->nullable(); // Ubah menjadi nullable\n-            $table->date('tanggal');\n+            $table->date('tanggal_masuk');\n+            $table->date('tanggal_keluar');\n             $table->timestamps();\n \n             $table->foreign('diagnosa_id')->references('rekam_medis')->on('diagnosa');\n             $table->foreign('pasien_id')->references('NIK')->on('pasien');\n"
+                },
+                {
+                    "date": 1721206077965,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,9 @@\n             $table->id('id_pembayaran');\n             $table->string('diagnosa_id');\n             $table->string('pasien_id');\n             $table->string('kamar_id');\n-            $table->integer('harga');\n+            $table->integer('harga_inap');\n             $table->integer('jumlah')->nullable(); // Ubah menjadi nullable\n             $table->date('tanggal_masuk');\n             $table->date('tanggal_keluar');\n             $table->timestamps();\n"
+                },
+                {
+                    "date": 1721206247800,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,8 @@\n             $table->id('id_pembayaran');\n             $table->string('diagnosa_id');\n             $table->string('pasien_id');\n             $table->string('kamar_id');\n-            $table->integer('harga_inap');\n             $table->integer('jumlah')->nullable(); // Ubah menjadi nullable\n             $table->date('tanggal_masuk');\n             $table->date('tanggal_keluar');\n             $table->timestamps();\n"
+                },
+                {
+                    "date": 1721206414002,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,8 @@\n             $table->id('id_pembayaran');\n             $table->string('diagnosa_id');\n             $table->string('pasien_id');\n             $table->string('kamar_id');\n-            $table->integer('jumlah')->nullable(); // Ubah menjadi nullable\n             $table->date('tanggal_masuk');\n             $table->date('tanggal_keluar');\n             $table->timestamps();\n \n"
+                },
+                {
+                    "date": 1721208253483,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,9 @@\n         Schema::create('pembayaran', function (Blueprint $table) {\n             $table->id('id_pembayaran');\n             $table->string('diagnosa_id');\n             $table->string('pasien_id');\n-            $table->string('kamar_id');\n+            $table->string('kamar_id')->nullable();\n             $table->date('tanggal_masuk');\n             $table->date('tanggal_keluar');\n             $table->timestamps();\n \n"
+                },
+                {
+                    "date": 1721208360119,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -9,17 +9,17 @@\n     {\n         Schema::create('pembayaran', function (Blueprint $table) {\n             $table->id('id_pembayaran');\n             $table->string('diagnosa_id');\n-            $table->string('pasien_id');\n-            $table->string('kamar_id')->nullable();\n+            // $table->string('pasien_id');\n+            // $table->string('kamar_id')->nullable();\n             $table->date('tanggal_masuk');\n             $table->date('tanggal_keluar');\n             $table->timestamps();\n \n             $table->foreign('diagnosa_id')->references('rekam_medis')->on('diagnosa');\n-            $table->foreign('pasien_id')->references('NIK')->on('pasien');\n-            $table->foreign('kamar_id')->references('no_kamar')->on('kamar');\n+            // $table->foreign('pasien_id')->references('NIK')->on('pasien');\n+            // $table->foreign('kamar_id')->references('no_kamar')->on('kamar');\n         });\n     }\n \n     public function down(): void\n"
+                }
+            ],
+            "date": 1721192264316,
+            "name": "Commit-0",
+            "content": "<?php\nuse Illuminate\\Database\\Migrations\\Migration;\nuse Illuminate\\Database\\Schema\\Blueprint;\nuse Illuminate\\Support\\Facades\\Schema;\n\nreturn new class extends Migration\n{\n    public function up(): void\n    {\n        Schema::create('pembayaran', function (Blueprint $table) {\n            $table->id('id_pembayaran');\n            $table->string('diagnosa_id');\n            $table->string('pasien_id');\n            $table->string('kamar_id');\n            $table->integer('harga');\n            $table->integer('jumlah')->nullable(); // Ubah menjadi nullable\n            $table->date('tanggal');\n            $table->timestamps();\n\n            $table->foreign('diagnosa_id')->references('rekam_medis')->on('diagnosa');\n            $table->foreign('pasien_id')->references('NIK')->on('pasien');\n            $table->foreign('kamar_id')->references('no_kamar')->on('kamar');\n        });\n    }\n\n    public function down(): void\n    {\n        Schema::dropIfExists('pembayaran');\n    }\n};"
+        }
+    ]
+}

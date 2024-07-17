@@ -52,7 +52,7 @@ class DokterResource extends Resource
                         Forms\Components\TextInput::make('telepon')
                             ->tel()
                             ->required()
-                            ->numeric(),
+                        ,
                     ])
             ]);
     }
@@ -69,7 +69,7 @@ class DokterResource extends Resource
                 Tables\Columns\TextColumn::make('jenis_kelamin')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('telepon')
-                    ->numeric()
+                    // ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('spesialis')
                     ->searchable(),
