@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('pasien_id');
             $table->string('kamar_id')->nullable();
             $table->string('penyakit');
-            $table->timestamps();
+            $table->timestamps();   
 
             // Add foreign key constraints
             $table->foreign('pasien_id')->references('NIK')->on('pasien');
