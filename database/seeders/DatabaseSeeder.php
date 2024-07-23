@@ -15,18 +15,18 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'admin',
-            'email' => 'admin@admin.com',
-            'role' => 'Admin',
-            'password' => 'admin',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'admin',
+        //     'email' => 'admin@admin.com',
+        //     'role' => 'Admin',
+        //     'password' => 'adm`in',
+        // ]);
 
-        User::factory()->create([
-            'name' => 'dokter',
-            'email' => 'dokter@dokter.com',
-            'role' => 'Dokter',
-            'password' => 'dokter'
-        ]);
+        // User::factory()->create([
+        //     'name' => 'dokter',
+        //     'email' => 'dokter@dokter.com',
+        //     'role' => 'Dokter',
+        //     'password' => 'dokter'
+        // ]);
     }
 }
